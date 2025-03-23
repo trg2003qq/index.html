@@ -6,46 +6,44 @@
     <title>تحديد الموقع الجغرافي</title>
 </head>
 <body>
-
-    <h2>تمكين الموقع الجغرافي</h2>
-    <p id="location">جاري تحديد الموقع...</p>
+    <h2>موقعك الحالي:</h2>
+    <p id="location">جاري الحصول على الموقع...</p>
 
     <script>
-        function getLocation() {
+        function requestLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        let lat = position.coords.latitude;
+                        let lon = position.coords.longitude;
+                        document.getElementById("location").innerHTML = 
+                            "📍 خط العرض: " + lat + "<br>📍 خط الطول: " + lon +
+                            <br><a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank">🔗 عرض على الخريطة</a>;
+                    },
+                    function (error) {
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                document.getElementById("location").innerHTML = "⚠️ تم رفض إذن الوصول إلى الموقع.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                document.getElementById("location").innerHTML = "❌ معلومات الموقع غير متاحة.";
+                                break;
+                            case error.TIMEOUT:
+                                document.getElementById("location").innerHTML = "⏳ انتهت مهلة الطلب.";
+                                break;
+                            default:
+                                document.getElementById("location").innerHTML = "❗ حدث خطأ غير معروف.";
+                        }
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
             } else {
-                document.getElementById("location").innerHTML = "المتصفح لا يدعم تحديد الموقع.";
+                document.getElementById("location").innerHTML = "🚫 المتصفح لا يدعم تحديد الموقع.";
             }
         }
 
-        function showPosition(position) {
-            let lat = position.coords.latitude;
-            let lon = position.coords.longitude;
-            document.getElementById("location").innerHTML = 
-                خط العرض: ${lat} <br> خط الطول: ${lon};
-        }
-
-        function showError(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    document.getElementById("location").innerHTML = "تم رفض الإذن للوصول إلى الموقع.";
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    document.getElementById("location").innerHTML = "معلومات الموقع غير متوفرة.";
-                    break;
-                case error.TIMEOUT:
-                    document.getElementById("location").innerHTML = "انتهت مهلة طلب الموقع.";
-                    break;
-                case error.UNKNOWN_ERROR:
-                    document.getElementById("location").innerHTML = "حدث خطأ غير معروف.";
-                    break;
-            }
-        }
-
-        // تشغيل تحديد الموقع تلقائيًا عند فتح الصفحة
-        getLocation();
+        // طلب تحديد الموقع عند تحميل الصفحة
+        requestLocation();
     </script>
-
 </body>
 </html>
