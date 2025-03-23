@@ -3,51 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحديد الموقع</title>
+    <title>تحديد الموقع الجغرافي</title>
+</head>
+<body>
+
+    <h2>تمكين الموقع الجغرافي</h2>
+    <p id="location">جاري تحديد الموقع...</p>
+
     <script>
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError);
             } else {
-                alert("المتصفح لا يدعم تحديد الموقع.");
+                document.getElementById("location").innerHTML = "المتصفح لا يدعم تحديد الموقع.";
             }
         }
 
         function showPosition(position) {
-            let latitude = position.coords.latitude;
-            let longitude = position.coords.longitude;
-            let accuracy = position.coords.accuracy;
-
-            let mapLink = https://www.google.com/maps?q=${latitude},${longitude};
-            
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
             document.getElementById("location").innerHTML = 
-                خط العرض: ${latitude}<br>
-                 خط الطول: ${longitude}<br>
-                 الدقة: ${accuracy} متر<br>
-                 <a href="${mapLink}" target="_blank">عرض موقعي على الخريطة</a>;
+                خط العرض: ${lat} <br> خط الطول: ${lon};
         }
 
         function showError(error) {
-            switch(error.code) {
+            switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    alert("تم رفض طلب الموقع.");
+                    document.getElementById("location").innerHTML = "تم رفض الإذن للوصول إلى الموقع.";
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    alert("الموقع غير متاح.");
+                    document.getElementById("location").innerHTML = "معلومات الموقع غير متوفرة.";
                     break;
                 case error.TIMEOUT:
-                    alert("انتهت مهلة الطلب.");
+                    document.getElementById("location").innerHTML = "انتهت مهلة طلب الموقع.";
                     break;
                 case error.UNKNOWN_ERROR:
-                    alert("حدث خطأ غير معروف.");
+                    document.getElementById("location").innerHTML = "حدث خطأ غير معروف.";
                     break;
             }
         }
+
+        // تشغيل تحديد الموقع تلقائيًا عند فتح الصفحة
+        getLocation();
     </script>
-</head>
-<body>
-    <h2>تحديد موقع المستخدم</h2>
-    <button onclick="getLocation()">احصل على موقعي</button>
-    <p id="location"></p>
+
 </body>
 </html>
